@@ -1,0 +1,21 @@
+import sys
+input = sys.stdin.readline
+
+word1 = input().rstrip()
+word2 = input().rstrip()
+
+h,w = len(word1), len(word2)
+cache = [[""] * (w+1) for _ in range(h+1)]
+
+for i in range(1, h+1):
+    for j in range(1, w+1):
+        if word1[i-1] == word2[j-1]:
+            cache[i][j] = cache[i-1][j-1] + word1[i-1]
+        else:
+            if len(cache[i][j-1]) > len(cache[i-1][j]):
+                cache[i][j] = cache[i][j-1]
+            else:
+                cache[i][j] = cache[i-1][j]
+
+answer = cache[-1][-1]
+print(0 if len(answer) == 0 else "{}\n{}".format(len(answer), answer))
