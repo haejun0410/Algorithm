@@ -1,12 +1,8 @@
 import sys
 input = sys.stdin.readline
-import math
 
 n = int(input())
 
-cnt = 1
+answer = int(n**0.5)
 
-while(cnt**2 <= n):
-    cnt += 1
-
-print(cnt - 1)
+print(answer)
