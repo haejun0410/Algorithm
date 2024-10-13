@@ -1,11 +1,19 @@
 import sys
-input = sys.stdin.readline
 
-n = int(input())
+def csod(n):
+    MOD = 1000000
+    result = 0
+    
+    for i in range(2, int(n**0.5) + 1):
+        j = n // i
+        result += (i + j) * (j - i + 1) // 2
+        result %= MOD
+        
+        if i != j:
+            result += i * (n // i - i)
+            result %= MOD
+    
+    return result
 
-answer = 0
-
-for i in range(2,n//2+1):
-    answer += (n//i -1)*i
-
-print(answer%1000000)
+n = int(sys.stdin.readline())
+print(csod(n))
