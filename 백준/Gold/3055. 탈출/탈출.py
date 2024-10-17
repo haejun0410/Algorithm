@@ -33,7 +33,6 @@ def checkValid(x,y):
     return 0 <= x < r and 0 <= y < c
 
 def bfs(x,y):
-    visited[x][y] = 1
     while queue:
         for _ in range(len(queue)):
             cx,cy = queue.popleft()
@@ -54,6 +53,6 @@ def bfs(x,y):
 
 bfs(sx,sy)
 if visited[bx][by]:
-    print(visited[bx][by] - 1)
+    print(visited[bx][by])
 else:
     print("KAKTUS")
