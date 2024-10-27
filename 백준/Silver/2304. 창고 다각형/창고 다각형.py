@@ -6,9 +6,10 @@ for _ in range(n):
     columns.append(tuple(map(int,input().split())))
 columns.sort()
 
+max_height = max([t[1] for t in columns])
 answer = 0
 
-for i in range(1, 1000):
+for i in range(1, max_height+1):
     left = 0
     right = 0
     for j in range(n):
