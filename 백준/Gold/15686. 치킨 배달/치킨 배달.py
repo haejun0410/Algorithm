@@ -1,0 +1,46 @@
+n, m = map(int, input().split())
+
+stores = []
+homes = []
+
+for i in range(n):
+    arr = list(map(int, input().split()))
+    if 2 or 1 in arr:
+        for j in range(n):
+            if arr[j] == 2:
+                stores.append((i, j))
+            if arr[j] == 1:
+                homes.append((i, j))
+
+
+def recursion(idx, row, cnt):
+    global cost
+
+    if cnt == m or (idx == len(stores) and cnt <= m):
+        # 치킨 거리 계산하기
+        current_cost = 0
+        for home in homes:
+            distance = 99999999999
+            for target in range(len(row)):
+                # 폐업되지 않은 가게들로 치킨 거리 계산
+                if row[target] == 1:
+                    hy, hx = home
+                    cy, cx = stores[target]
+                    distance = min(distance, (abs(cy-hy) + abs(cx-hx)))
+            current_cost += distance
+        cost = min(current_cost, cost)
+        return
+
+    # 폐업 시키지 않음
+    row[idx] = 1
+    recursion(idx + 1, row, cnt + 1)
+    
+    # 폐업 시킴
+    row[idx] = 0
+    recursion(idx + 1, row, cnt)
+
+
+
+cost = 999999999
+recursion(0, [0]*len(stores), 0)
+print(cost)
