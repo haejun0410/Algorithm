@@ -16,7 +16,7 @@ for i in range(n):
 def recursion(idx, row, cnt):
     global cost
 
-    if cnt == m or (idx == len(stores) and cnt < m):
+    if cnt == m or (idx == len(stores) and cnt <= m):
         # 치킨 거리 계산하기
         current_cost = 0
         for home in homes:
@@ -31,13 +31,13 @@ def recursion(idx, row, cnt):
         cost = min(current_cost, cost)
         return
 
-    new_row = row[:]
-    # 폐업 시킴
-    recursion(idx + 1, new_row, cnt)
     # 폐업 시키지 않음
-    new_row[idx] = 1
-    recursion(idx + 1, new_row, cnt + 1)
+    row[idx] = 1
+    recursion(idx + 1, row, cnt + 1)
 
+    # 폐업 시킴
+    row[idx] = 0
+    recursion(idx + 1, row, cnt)
 
 
 cost = INF
