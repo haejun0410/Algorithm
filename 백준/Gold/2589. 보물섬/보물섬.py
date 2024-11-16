@@ -6,7 +6,7 @@ board = [list(input()) for _ in range(n)]
 maxi = 0
 
 for y in range(n):
-    for x in range(m):  # 여기를 수정: range(n) -> range(m)
+    for x in range(m):
         if board[y][x] == 'L':
             visited = [[0 for i in range(m)] for j in range(n)]
             dist = [[0 for i in range(m)] for j in range(n)]
