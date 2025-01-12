@@ -1,13 +1,12 @@
--- 코드를 입력하세요
-SELECT 
+SELECT
     PT_NAME,
-    PT_NO, 
-    GEND_CD, 
-    AGE, 
-    CASE 
+    PT_NO,
+    GEND_CD,
+    AGE,
+    CASE
         WHEN TLNO is NULL THEN "NONE"
         ELSE TLNO 
     END AS TLNO
 FROM PATIENT
-WHERE AGE <= 12 and GEND_CD='W'
+WHERE AGE < 13 and GEND_CD = "W"
 ORDER BY AGE DESC, PT_NAME
