@@ -1,0 +1,15 @@
+SELECT
+    a.APNT_NO,
+    b.PT_NAME,
+    b.PT_NO,
+    a.MCDP_CD,
+    c.DR_NAME,
+    a.APNT_YMD
+FROM
+    APPOINTMENT AS a
+JOIN PATIENT AS b
+ON a.PT_NO = b.PT_NO
+JOIN DOCTOR AS c
+ON a.MDDR_ID = c.DR_ID
+WHERE a.APNT_CNCL_YN = "N" and a.MCDP_CD = "CS" and DATE_FORMAT(a.APNT_YMD, "%Y-%m-%d") = "2022-04-13"
+ORDER BY APNT_YMD
