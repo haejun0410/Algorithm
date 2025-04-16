@@ -1,28 +1,18 @@
-import java.util.*;
-import java.lang.*;
 import java.io.*;
 
-class Main {
-    public static void main(String[] args) {
-        Scanner sc = new Scanner(System.in);
+public class Main {
+    public static void main(String[] args) throws IOException{
+        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
 
-        String word = sc.next();
+        String str = br.readLine();
+        StringBuilder sb = new StringBuilder(str);
+        String revStr = sb.reverse().toString();
 
-        int a = 0;
-        int b = word.length() -1;
-
-
-        boolean flag = false;
-        
-        while (a < b) {
-            if (word.charAt(a) != word.charAt(b)) {
-                flag = true;
-                break;
-            }    
-            a++;
-            b--;
+        if (str.equals(revStr)) {
+            System.out.println(1);
         }
-
-        System.out.println(flag ? 0 : 1);
+        else {
+            System.out.println(0);
+        }
     }
 }
