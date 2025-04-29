@@ -31,7 +31,6 @@ public class Main {
             }
         }
         bfs();
-        int[][] newVisited = new int[n][m];
 
         int max = -1;
         for(int i=0; i<n; i++) {
