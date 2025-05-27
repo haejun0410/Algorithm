@@ -20,8 +20,12 @@ public class Main {
         int count = 0;
         int start = 0;
         int end = n-1;
-
-        while (start < end) {
+        
+        if (m > 200000) {
+            System.out.println(0);
+        }
+        else {
+            while (start < end) {
             if (arr[start] + arr[end] < m) {
                 start++;
             }
@@ -36,6 +40,8 @@ public class Main {
         }
 
         System.out.println(count);
+        }
+        
         
     }
 }
