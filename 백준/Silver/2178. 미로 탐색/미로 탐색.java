@@ -2,7 +2,10 @@ import java.io.*;
 import java.util.*;
 
 public class Main {
-    
+
+    static int[] dy = {-1, 0, 1, 0};
+    static int[] dx = {0, -1, 0, 1};
+
     public static void main(String[] args) throws IOException{
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
         
@@ -11,71 +14,41 @@ public class Main {
         int n = Integer.parseInt(st.nextToken());
         int m = Integer.parseInt(st.nextToken());
 
-        Character[][] map = new Character[n][m];
-        int[][] dist = new int[n][m];
+        char[][] board = new char[n][m];
 
-        for (int i=0; i<n; i++) {
+        for(int i=0; i<n; i++) {
             String arr = br.readLine();
-            for (int j=0; j<m; j++) {
-                map[i][j] = arr.charAt(j);
-                dist[i][j] = -1;
+            for(int j=0; j<m; j++) {
+                board[i][j] = arr.charAt(j);
             }
         }
-        int[] dy = {1, 0, -1, 0};
-        int[] dx = {0, 1, 0, -1};
 
-        Queue<Point> queue = new LinkedList<>();
+        Queue<int[]> queue = new ArrayDeque<>();
+        int[][] visited = new int[n][m];
+        for(int i=0; i<n; i++) {
+            Arrays.fill(visited[i], -1);
+        }
 
-        queue.offer(new Point(0,0));
-        dist[0][0] = 0;
+        queue.offer(new int[] {0, 0});
+        visited[0][0] = 0;
 
         while(!queue.isEmpty()) {
-            Point p = queue.poll();
+            int[] current = queue.poll();
 
-            for (int i=0; i<4; i++) {
-                int nX = p.x + dx[i];
-                int nY = p.y + dy[i];
+            for(int i=0; i<4; i++) {
+                int ny = current[0] + dy[i];
+                int nx = current[1] + dx[i];
 
-                if (nX < 0 || nX >= m || nY < 0 || nY >=n) {
-                    continue;
+                if (ny >= 0 && ny < n && nx >= 0 && nx < m) {
+                    if (visited[ny][nx] == -1 && board[ny][nx] == '1') {
+                        queue.offer(new int[] {ny, nx});
+                        visited[ny][nx] = visited[current[0]][current[1]] + 1;
+                    }
                 }
-                if(map[nY][nX] == '0' || dist[nY][nX] != -1) {
-                    continue;
-                }
-
-                queue.offer(new Point(nY, nX));
-
-                dist[nY][nX] = dist[p.y][p.x] + 1;
             }
         }
 
-        System.out.println(dist[n-1][m-1] + 1);
-        
+        System.out.println(visited[n-1][m-1] + 1);
+
     }
-
-    public static  class Point {
-        int x,y;
-
-        public Point(int y, int x) {
-            this.x = x;
-            this.y = y;
-        }
-
-        public int getX(){
-            return x;
-        }
-
-        public int getY() {
-            return y;
-        }
-
-        public void setX(int x) {
-            this.x = x;
-        }
-
-        public void setY(int y) {
-            this.y = y;
-        }
-    }
-
 }
