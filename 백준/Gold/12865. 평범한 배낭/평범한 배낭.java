@@ -2,6 +2,7 @@ import java.io.*;
 import java.util.*;
 
 public class Main {
+
     public static void main(String[] args) throws IOException {
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
 
@@ -20,15 +21,13 @@ public class Main {
         }
 
         int[] dp = new int[k+1];
-
         dp[0] = 0;
+
         for(int i=0; i<n; i++) {
-            for (int j = k; j >= weights[i]; j--) {
-                dp[j] = Math.max(dp[j], dp[j - weights[i]] + values[i]);
+            for(int j=k; j>=weights[i]; j--) {
+                dp[j] = Math.max(dp[j], dp[j-weights[i]] + values[i]);
             }
         }
-
-
 
         System.out.println(dp[k]);
     }
