@@ -5,37 +5,42 @@ public class Main {
 
     public static void main(String[] args) throws IOException {
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+
+        int T = Integer.parseInt(br.readLine());
+
         StringBuilder sb = new StringBuilder();
 
-        int t = Integer.parseInt(br.readLine());
+        for(int t=0; t<T; t++) {
+            String target = br.readLine();
+            Deque<Character> stack = new ArrayDeque<>();
 
-        for (int testcase = 0; testcase < t; testcase++) {
-            String str = br.readLine();
-            Stack<Character> stack = new Stack<>();
-            boolean isValid = true;
+            boolean flag = true;
 
-            for (int i = 0; i < str.length(); i++) {
-                char ch = str.charAt(i);
-
-                if (ch == '(') {
-                    stack.push(ch);
-                } else {
+            for(int i=0; i<target.length(); i++) {
+                if (target.charAt(i) == '(') {
+                    stack.push(target.charAt(i));
+                }
+                else {
                     if (stack.isEmpty()) {
-                        isValid = false;
+                        flag = false;
                         break;
-                    } else {
-                        stack.pop();
                     }
+                    stack.pop();
                 }
             }
 
-            if (isValid && stack.isEmpty()) {
-                sb.append("YES\n");
-            } else {
-                sb.append("NO\n");
+            if (!stack.isEmpty()) {
+                flag = false;
+            }
+
+            if (flag) {
+                sb.append("YES").append("\n");
+            }
+            else {
+                sb.append("NO").append("\n");
             }
         }
 
-        System.out.print(sb);
+        System.out.println(sb);
     }
 }
