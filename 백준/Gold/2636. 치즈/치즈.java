@@ -9,7 +9,7 @@ public class Main {
     static int[][] map;
     static int n,m;
     static int cheese;
-    
+
     public static void main(String[] args) throws IOException {
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
         StringTokenizer st = new StringTokenizer(br.readLine());
@@ -41,7 +41,7 @@ public class Main {
 
         System.out.println(time);
         System.out.println(cheeseCount);
-        
+
     }
 
     public static void bfs() {
