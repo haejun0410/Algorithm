@@ -3,74 +3,63 @@ import java.util.*;
 
 public class Main {
 
-    static int n;
-    static ArrayList<Integer>[] computers;
-    static int[] hackedCount; 
+    static List<List<Integer>> computers;
+    static int n, m;
 
     public static void main(String[] args) throws IOException {
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
         StringTokenizer st = new StringTokenizer(br.readLine());
 
         n = Integer.parseInt(st.nextToken());
-        int m = Integer.parseInt(st.nextToken());
+        m = Integer.parseInt(st.nextToken());
 
-        computers = new ArrayList[n + 1];
-        for (int i = 1; i <= n; i++) {
-            computers[i] = new ArrayList<>();
+        computers = new ArrayList<>();
+        for (int i = 0; i <= n; i++) {
+            computers.add(new ArrayList<>());
         }
-
+        
         for (int i = 0; i < m; i++) {
             st = new StringTokenizer(br.readLine());
-            int c1 = Integer.parseInt(st.nextToken());
-            int c2 = Integer.parseInt(st.nextToken());
-
-            computers[c2].add(c1);
+            int A = Integer.parseInt(st.nextToken());
+            int B = Integer.parseInt(st.nextToken());
+            computers.get(B).add(A);
         }
 
-        hackedCount = new int[n + 1];
-        Arrays.fill(hackedCount, -1);
-
-        int max = 0;
-        ArrayList<Integer> result = new ArrayList<>();
-
+        int[] result = new int[n + 1];
+        int maxCount = 0;
+        
         for (int i = 1; i <= n; i++) {
-            int count = bfs(i);
-            if (count > max) {
-                max = count;
-                result.clear();
-                result.add(i);
-            } else if (count == max) {
-                result.add(i);
+            int cnt = bfs(i);
+            result[i] = cnt;
+            maxCount = Math.max(maxCount, cnt);
+        }
+
+        StringBuilder sb = new StringBuilder();
+        for (int i = 1; i <= n; i++) {
+            if (result[i] == maxCount) {
+                sb.append(i).append(" ");
             }
         }
-
-        Collections.sort(result);
-        for (int num : result) {
-            System.out.print(num + " ");
-        }
+        System.out.println(sb);
     }
 
-    static int bfs(int start) {
-        if (hackedCount[start] != -1) return hackedCount[start];
-
-        int count = 0;
+    private static int bfs(int start) {
         boolean[] visited = new boolean[n + 1];
-        Queue<Integer> q = new LinkedList<>();
-        q.offer(start);
+        Queue<Integer> queue = new ArrayDeque<>();
+        queue.add(start);
         visited[start] = true;
+        int count = 1;
 
-        while (!q.isEmpty()) {
-            int cur = q.poll();
-            for (int next : computers[cur]) {
+        while (!queue.isEmpty()) {
+            int cur = queue.poll();
+            for (int next : computers.get(cur)) {
                 if (!visited[next]) {
                     visited[next] = true;
-                    q.offer(next);
+                    queue.add(next);
                     count++;
                 }
             }
         }
-
-        hackedCount[start] = count;
         return count;
     }
 }
