@@ -9,17 +9,17 @@ public class Main {
         int num = Integer.parseInt(br.readLine());
 
         for (int i=0; i<num; i++) {
-            arr[br.readLine().charAt(0)-'a']++;
+            arr[br.readLine().charAt(0) - 'a']++;
         }
         StringBuilder sb = new StringBuilder();
 
         for (int i=0; i<arr.length; i++) {
-            if (arr[i] > 4) {
-                sb.append((char)(i+'a'));
+            if (arr[i] >= 5) {
+                sb.append((char)(i + 'a'));
             }
         }
 
-        if (sb.toString().equals("")) {
+        if (sb.toString().isEmpty()) {
             System.out.println("PREDAJA");
         }
         else {
