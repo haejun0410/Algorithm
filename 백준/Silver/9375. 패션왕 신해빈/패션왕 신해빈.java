@@ -4,26 +4,32 @@ import java.util.*;
 public class Main {
     public static void main(String[] args) throws IOException{
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
-        
+
         int T = Integer.parseInt(br.readLine());
+
+        StringBuilder sb = new StringBuilder();
 
         for(int t=0; t<T; t++) {
             int n = Integer.parseInt(br.readLine());
-            HashMap<String, Integer> map = new HashMap<>();
+            HashMap<String, Integer> clothes = new HashMap<>();
 
             for(int i=0; i<n; i++) {
                 StringTokenizer st = new StringTokenizer(br.readLine());
-                String a = st.nextToken();
+                String name = st.nextToken();
                 String category = st.nextToken();
-                map.put(category, map.getOrDefault(category, 0) + 1);
+
+                clothes.put(category, clothes.getOrDefault(category, 0) + 1);
             }
 
-            int ret = 1;
-            for(int val : map.values()) {
-                ret *= (val+1);
+            int answer = 1;
+
+            for(Integer count : clothes.values()) {
+                answer *= (count + 1);
             }
 
-            System.out.println(ret-1);
+            sb.append(answer - 1).append("\n");
         }
+
+        System.out.println(sb.toString());
     }
 }
