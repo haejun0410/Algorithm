@@ -2,41 +2,36 @@ import java.io.*;
 import java.util.*;
 
 public class Main {
-	
-	static int n;
-	static int m;
-	
-	public static void main(String[] args) throws IOException {
-		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
-		
-		StringTokenizer st = new StringTokenizer(br.readLine());
 
-		n = Integer.parseInt(st.nextToken());
-		m = Integer.parseInt(st.nextToken());
-		int j = Integer.parseInt(br.readLine());
+    public static void main(String[] args) throws IOException {
+        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
 
-		int currentPos = 0;
-		int sum = 0;
+        StringTokenizer st = new StringTokenizer(br.readLine());
+        int n = Integer.parseInt(st.nextToken());
+        int m = Integer.parseInt(st.nextToken());
 
-		for (int i=0; i<j; i++) {
-			int pos = Integer.parseInt(br.readLine()) - 1;
-			int newPos = move(currentPos, pos);
-			sum += Math.abs(newPos - currentPos);
-			currentPos = newPos;
-		}
+        int start = 1;
+        int end = start + m-1;
 
-		System.out.println(sum);
-	}
+        int appleNum = Integer.parseInt(br.readLine());
+        int distance = 0;
 
-	public static int move(int currentPos, int pos) {
-		while (currentPos < pos && currentPos + m -1 < pos) {
-			currentPos++;
-		}
-		while (currentPos > pos && currentPos + m -1 > pos) {
-			currentPos--;
-		}
-		return currentPos;
-	}
+        for(int i=0; i<appleNum; i++){
+            int pos = Integer.parseInt(br.readLine());
+            if (pos < start) {
+                int diff = Math.abs(start - pos);
+                distance += diff;
+                start -= diff;
+                end -= diff;
+            }
+            else if (pos > end) {
+                int diff = Math.abs(pos - end);
+                distance += diff;
+                end += diff;
+                start += diff;
+            }
+        }
 
-	
+        System.out.println(distance);
+    }
 }
