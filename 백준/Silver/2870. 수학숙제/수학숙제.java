@@ -1,45 +1,45 @@
+import javax.swing.*;
 import java.io.*;
-import java.math.BigInteger;
 import java.util.*;
+import java.math.*;
 
 public class Main {
-	
-	public static void main(String[] args) throws IOException {
-		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
-		
-		int n = Integer.parseInt(br.readLine());
 
-		List<BigInteger> arr = new ArrayList<>();
+    public static void main(String[] args) throws IOException {
+        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
 
-		for (int i=0; i<n; i++) {
-			String str = br.readLine();
+        int n = Integer.parseInt(br.readLine());
 
-			String number = "";
-			for (int j=0; j<str.length(); j++) {
-				Character chr = str.charAt(j);
+        List<BigInteger> list = new ArrayList<>();
 
-				if (Character.isDigit(chr)) {
-					number += chr;
-				}
+        for(int i=0; i<n; i++) {
+            String line = br.readLine();
+            StringBuilder builder = new StringBuilder();
+            for(int j=0; j<line.length(); j++) {
+                if (Character.isDigit(line.charAt(j))) {
+                    builder.append(line.charAt(j));
+                }
+                else {
+                    if (!builder.toString().isEmpty()) {
+                        list.add(new BigInteger(builder.toString()));
+                        builder = new StringBuilder();
+                    }
+                }
+            }
 
-				else {
-					if (number.length() > 0) {
-						arr.add(new BigInteger(number));
-						number = "";
-					}
-				}
-			}
+            if (!builder.toString().isEmpty()) {
+                list.add(new BigInteger(builder.toString()));
+            }
+        }
 
-			if (number.length() > 0) {
-				arr.add(new BigInteger(number));
-			}
-		}
+        Collections.sort(list);
 
-		Collections.sort(arr);
+        StringBuilder sb = new StringBuilder();
+        for(BigInteger num : list) {
+            sb.append(num).append("\n");
+        }
 
-		for (int i=0; i<arr.size(); i++) {
-			System.out.println(arr.get(i));
-		}
-	}
-	
+        System.out.println(sb);
+    }
+
 }
