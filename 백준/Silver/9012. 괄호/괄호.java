@@ -6,41 +6,38 @@ public class Main {
     public static void main(String[] args) throws IOException {
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
 
-        int T = Integer.parseInt(br.readLine());
-
+        int n = Integer.parseInt(br.readLine());
         StringBuilder sb = new StringBuilder();
 
-        for(int t=0; t<T; t++) {
-            String target = br.readLine();
-            Deque<Character> stack = new ArrayDeque<>();
-
-            boolean flag = true;
-
-            for(int i=0; i<target.length(); i++) {
-                if (target.charAt(i) == '(') {
-                    stack.push(target.charAt(i));
+        for(int i=0; i<n; i++) {
+            String line = br.readLine();
+            int cnt = 0;
+            boolean isVPS = true;
+            for(int j=0; j<line.length(); j++) {
+                char ch = line.charAt(j);
+                if (ch == '(') {
+                    cnt++;
                 }
                 else {
-                    if (stack.isEmpty()) {
-                        flag = false;
+                    if (cnt == 0) {
+                        isVPS = false;
                         break;
                     }
-                    stack.pop();
+                    else {
+                        cnt--;
+                    }
                 }
             }
 
-            if (!stack.isEmpty()) {
-                flag = false;
-            }
-
-            if (flag) {
-                sb.append("YES").append("\n");
-            }
-            else {
+            if (!isVPS || cnt > 0) {
                 sb.append("NO").append("\n");
+            }
+            else{
+                sb.append("YES").append("\n");
             }
         }
 
-        System.out.println(sb);
+        System.out.println(sb.toString());
     }
+
 }
