@@ -3,89 +3,122 @@ import java.util.*;
 
 public class Main {
 
-    static int r, c;
-    static Character[][] map;
+    static int n, m;
+
+    static char[][] board;
+    static Queue<int[]> jihunQueue;
+    static Queue<int[]> fireQueue;
+
     static int[] dy = {-1, 0, 1, 0};
     static int[] dx = {0, -1, 0, 1};
+    static boolean[][] visited;
+
+    static boolean escaped = false;
+
 
     public static void main(String[] args) throws IOException {
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+
         StringTokenizer st = new StringTokenizer(br.readLine());
 
-        r = Integer.parseInt(st.nextToken());
-        c = Integer.parseInt(st.nextToken());
+        n = Integer.parseInt(st.nextToken());
+        m = Integer.parseInt(st.nextToken());
 
-        Queue<point> player = new LinkedList<>();
-        Queue<point> fire = new LinkedList<>();
-        map = new Character[r][c];
+        board = new char[n][m];
 
-        boolean[][] visited = new boolean[r][c];
+        jihunQueue = new ArrayDeque<>();
+        fireQueue = new ArrayDeque<>();
+        visited = new boolean[n][m];
 
-        for (int i = 0; i < r; i++) {
+        for(int i=0; i<n; i++) {
             String line = br.readLine();
-            for (int j = 0; j < c; j++) {
-                map[i][j] = line.charAt(j);
-                if (map[i][j] == 'J') {
-                    player.offer(new point(i, j));
+            for(int j=0; j<m; j++) {
+                board[i][j] = line.charAt(j);
+                if (board[i][j] == 'J'){
+                    jihunQueue.add(new int[]{i, j});
                     visited[i][j] = true;
-                } else if (map[i][j] == 'F') {
-                    fire.offer(new point(i, j));
+                    if (i == 0 || i == n-1 || j == 0 || j == m-1) {
+                        escaped = true;
+                    }
+                }
+                else if (board[i][j] == 'F'){
+                    fireQueue.add(new int[]{i, j});
+                    visited[i][j] = true;
                 }
             }
         }
 
         int time = 0;
 
-        while (!player.isEmpty()) {
+        for(;;) {
+            if (escaped) {
+                System.out.println(time+1);
+                break;
+            }
             time++;
-            
-            int fireSize = fire.size();
-            for (int i = 0; i < fireSize; i++) {
-                point f = fire.poll();
-                for (int d = 0; d < 4; d++) {
-                    int ny = f.y + dy[d];
-                    int nx = f.x + dx[d];
+            moveFire();
+            boolean isMoved = moveJihun();
+            if (!isMoved) {
+                System.out.println("IMPOSSIBLE");
+                break;
+            }
 
-                    if (ny >= 0 && ny < r && nx >= 0 && nx < c) {
-                        if (map[ny][nx] == '.' || map[ny][nx] == 'J') {
-                            map[ny][nx] = 'F';
-                            fire.offer(new point(ny, nx));
-                        }
+        }
+
+    }
+
+    public static void moveFire() {
+        int fireQueueSize = fireQueue.size();
+
+        for(int i=0; i<fireQueueSize; i++) {
+            int[] curr = fireQueue.poll();
+
+            for(int k=0; k<4; k++) {
+                int ny = curr[0] + dy[k];
+                int nx = curr[1] + dx[k];
+
+                if (ny >= 0 && ny < n && nx >= 0 && nx < m && !visited[ny][nx]) {
+                    if (board[ny][nx] == 'J' || board[ny][nx] == '.') {
+                        fireQueue.offer(new int[] {ny, nx});
+                        visited[ny][nx] = true;
                     }
                 }
             }
+        }
+    }
 
-            int playerSize = player.size();
-            for (int i = 0; i < playerSize; i++) {
-                point p = player.poll();
-                
-                if (p.y == 0 || p.y == r - 1 || p.x == 0 || p.x == c - 1) {
-                    System.out.println(time);
-                    return;
-                }
+    public static boolean moveJihun() {
+        int jihunQueueSize = jihunQueue.size();
 
-                for (int d = 0; d < 4; d++) {
-                    int ny = p.y + dy[d];
-                    int nx = p.x + dx[d];
+        int isMoved = 0;
 
-                    if (ny >= 0 && ny < r && nx >= 0 && nx < c) {
-                        if (map[ny][nx] == '.' && !visited[ny][nx]) {
-                            visited[ny][nx] = true;
-                            player.offer(new point(ny, nx));
+        for(int i=0; i<jihunQueueSize; i++) {
+            int[] curr = jihunQueue.poll();
+
+            for(int k=0; k<4; k++) {
+                int ny = curr[0] + dy[k];
+                int nx = curr[1] + dx[k];
+
+                if (ny >= 0 && ny < n && nx >= 0 && nx < m && !visited[ny][nx]) {
+                    if (board[ny][nx] == '.') {
+                        jihunQueue.offer(new int[] {ny, nx});
+                        visited[ny][nx] = true;
+                        isMoved|=1;
+
+                        if (ny == 0 || ny == n-1 || nx == 0 || nx == m-1) {
+                            escaped = true;
                         }
                     }
                 }
             }
         }
 
-        System.out.println("IMPOSSIBLE");
+        if (isMoved == 1) {
+            return true;
+        }
+        return false;
     }
 
-    static class point {
-        int y, x;
-        public point(int y, int x) {
-            this.y = y;
-            this.x = x;
-        }
-    }
+
+
 }
