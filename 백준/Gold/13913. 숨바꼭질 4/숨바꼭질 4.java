@@ -2,8 +2,6 @@ import java.io.*;
 import java.util.*;
 
 public class Main {
-    static int MAX = 100001;
-    
     public static void main(String[] args) throws IOException {
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
         StringTokenizer st = new StringTokenizer(br.readLine());
@@ -11,52 +9,49 @@ public class Main {
         int n = Integer.parseInt(st.nextToken());
         int k = Integer.parseInt(st.nextToken());
 
-        if (n == k) {
-            System.out.println(0);
-            System.out.println(n);
-            return;
-        }
+        Queue<Integer> queue = new ArrayDeque<>();
+        int[] visited = new int[100001];
+        Arrays.fill(visited, -1);
 
-        int[] dist = new int[MAX];
-        int[] prev = new int[MAX];
-        boolean[] visited = new boolean[MAX];
-
-        Queue<Integer> queue = new LinkedList<>();
         queue.offer(n);
-        visited[n] = true;
-        dist[n] = 0;
+        visited[n] = n;
 
-        while (!queue.isEmpty()) {
-            int now = queue.poll();
+        while(!queue.isEmpty()) {
+            int curr = queue.poll();
 
-            for (int next : new int[]{now - 1, now + 1, now * 2}) {
-                if (next < 0 || next >= MAX) continue;
+            if (curr == k) break;
 
-                if (!visited[next]) {
-                    visited[next] = true;
-                    dist[next] = dist[now] + 1;
-                    prev[next] = now;
+            for(int next : new int[] {curr * 2, curr + 1, curr - 1}) {
+                if (next >= 0 && next <= 100000 && visited[next] == -1) {
+                    visited[next] = curr;
                     queue.offer(next);
-
-                    if (next == k) {
-                        break;
-                    }
                 }
             }
         }
 
-        System.out.println(dist[k]);
+        int time = 0;
+        boolean flag = true;
 
         Stack<Integer> stack = new Stack<>();
-        int curr = k;
-        while (curr != n) {
-            stack.push(curr);
-            curr = prev[curr];
-        }
-        stack.push(n);
+        int next = k;
 
-        while (!stack.isEmpty()) {
-            System.out.print(stack.pop() + " ");
+        while(flag) {
+            stack.push(next);
+            time++;
+            if (next == n) {
+                flag = false;
+            }
+            else {
+                next = visited[next];
+            }
         }
+        StringBuilder sb = new StringBuilder();
+
+        while(!stack.isEmpty()) {
+            sb.append(stack.pop()).append(" ");
+        }
+
+        System.out.println(time-1);
+        System.out.println(sb);
     }
 }
