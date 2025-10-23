@@ -10,31 +10,47 @@ public class Main {
         int n = Integer.parseInt(st.nextToken());
         int k = Integer.parseInt(st.nextToken());
 
-        int[] visited = new int[100001];
-        int[] count = new int[100001];
+        if (n == k) {
+            System.out.println(0);
+            System.out.println(1);
+            return;
+        }
 
-        Queue<Integer> queue = new LinkedList<>();
+        Queue<Integer> queue = new ArrayDeque<>();
+        int[] dist = new int[100001];
+        Arrays.fill(dist, -1);
+
         queue.offer(n);
-        visited[n] = 0;
-        count[n] = 1;
+        dist[n] = 0;
 
-        while (!queue.isEmpty()) {
-            int current = queue.poll();
+        boolean flag = true;
+        int time = 0;
+        int method = 0;
 
-            for (int next : new int[]{current - 1, current + 1, current * 2}) {
-                if (next < 0 || next > 100000) continue;
+        while(flag) {
+            int size = queue.size();
+            time++;
 
-                if (visited[next] == 0 && next != n) {
-                    visited[next] = visited[current] + 1;
-                    count[next] = count[current];
-                    queue.offer(next);
-                } else if (visited[next] == visited[current] + 1) {
-                    count[next] += count[current];
+            for(int i=0; i<size; i++) {
+                int curr = queue.poll();
+
+                for(int next : new int[] { curr * 2, curr - 1, curr + 1}) {
+                    if (next >= 0 && next <= 100000) {
+                        if (next == k) {
+                            flag = false;
+                            method++;
+                        }
+
+                        if (dist[next] == -1 || dist[next] == time) {
+                            queue.offer(next);
+                            dist[next] = time;
+                        }
+                    }
                 }
             }
         }
 
-        System.out.println(visited[k]);
-        System.out.println(count[k]);
+        System.out.println(time);
+        System.out.println(method);
     }
 }
