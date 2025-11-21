@@ -3,41 +3,36 @@ import java.util.*;
 
 public class Main {
 
-    public static void main(String[] args) throws IOException {
+    public static void main(String[] args) throws Exception {
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
-
-        int n = Integer.parseInt(br.readLine());
         StringBuilder sb = new StringBuilder();
+        int n = Integer.parseInt(br.readLine());
 
         for(int i=0; i<n; i++) {
             String line = br.readLine();
-            int cnt = 0;
-            boolean isVPS = true;
-            for(int j=0; j<line.length(); j++) {
-                char ch = line.charAt(j);
-                if (ch == '(') {
-                    cnt++;
+            int stack = 0;
+            boolean flag = true;
+            for(int idx = 0; idx < line.length(); idx++) {
+                if (line.charAt(idx) == '(') {
+                    stack++;
                 }
                 else {
-                    if (cnt == 0) {
-                        isVPS = false;
-                        break;
+                    if (stack == 0) {
+                        flag = false;
                     }
                     else {
-                        cnt--;
+                        stack--;
                     }
                 }
             }
-
-            if (!isVPS || cnt > 0) {
+            if (!flag || stack != 0) {
                 sb.append("NO").append("\n");
             }
-            else{
+            else {
                 sb.append("YES").append("\n");
             }
         }
 
         System.out.println(sb.toString());
     }
-
 }
