@@ -1,5 +1,4 @@
 import java.util.*;
-import java.io.*;
 
 class Solution {
     public String solution(String[] participant, String[] completion) {
@@ -10,14 +9,16 @@ class Solution {
         }
         
         for(String name : completion) {
-            map.put(name, map.get(name) -1);
+            map.put(name, map.get(name) - 1);
         }
         
-        for(String key : map.keySet()) {
-            if (map.get(key) == 1) {
-                answer = key;
+        for(String name : map.keySet()) {
+            if (map.get(name) != 0) {
+                answer = name;
             }
         }
+        
         return answer;
+        
     }
 }
