@@ -12,14 +12,14 @@ public class Main {
 
         long temp = 0;
 
+        int ten = 10;
+
         for(int i=1; i<=n; i++) {
-            int len = (String.valueOf(i)).length();
-            int pow10 = 1;
-            for (int j = 0; j < len; j++) {
-                pow10 = (pow10 * 10) % k;
+            if (ten == i) {
+                ten = ten * 10;
             }
 
-            temp = (temp * pow10 + i) % k;
+            temp = (temp * ten + i) % k;
 
         }
 
