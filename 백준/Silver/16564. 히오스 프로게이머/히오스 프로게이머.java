@@ -31,6 +31,7 @@ public class Main {
                 if (level < mid) {
                     levelUp -= (mid - level);
                 }
+                if (levelUp < 0) break;
             }
 
             if (levelUp < 0) {
@@ -48,4 +49,3 @@ public class Main {
         
     }
 }
-
