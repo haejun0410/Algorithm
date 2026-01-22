@@ -17,7 +17,7 @@ public class Main {
             min = Math.min(min, levels[i]);
         }
 
-        Arrays.sort(levels);
+        //Arrays.sort(levels);
 
         long start = min;
         long end = min + k;
@@ -48,3 +48,4 @@ public class Main {
         
     }
 }
+
