@@ -52,7 +52,8 @@ public class Solution {
     }
     // idx 번째 core에서 4방향으로 전선 놓기 시도
     public static void connect(int idx, int count, int len) {
-
+        // 코어를 더 골라도 최댓값 갱신이 안될 경우
+        if (numCore - idx + count < answer) return;
         // 모든 코어에 대해 시뮬레이션 완료
         if (idx == numCore) {
             // 1. 더 많은 코어를 연결한 경우
