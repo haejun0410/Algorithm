@@ -22,7 +22,6 @@ public class Solution {
             n = Integer.parseInt(br.readLine());
             board = new int[n][n];
             // 가장자리에 있는 코어로, 전선을 놓지 않아도 전원이 연결된 상태
-            int connected = 0;
 
             cores = new ArrayList<>();
             for(int i = 0; i < n ; i++) {
@@ -30,10 +29,7 @@ public class Solution {
                 for(int j = 0; j < n; j++) {
                     board[i][j] = line.charAt(j*2) - '0';
                     if (board[i][j] == 1) {
-                        if (i == 0 || j == 0 || i == n-1 || j == n-1) {
-                            connected++;
-                        }
-                        else {
+                        if (i != 0 && j != 0 && i != n-1 && j != n-1) {
                             cores.add(new int[] {i, j});
                         }
                     }
