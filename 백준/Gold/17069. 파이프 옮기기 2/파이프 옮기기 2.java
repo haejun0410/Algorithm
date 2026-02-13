@@ -19,54 +19,35 @@ public class Main {
             String line = br.readLine();
             for(int j = 0; j < n; j++) {
                 board[i][j] = line.charAt(j*2);
-                Arrays.fill(dp[i][j], -1);
             }
         }
 
-        System.out.println(search(0, 1, 0));
+        dp[0][1][0] = 1;
+        System.out.println(search());
 
     }
 
-    // dir -> 0 : 가로 , 1 : 세로, 2 : 대각선
-    public static long search(int y, int x, int dir) {
-        if (y == n-1 && x == n-1) return 1;
-
-        if (dp[y][x][dir] != -1) return dp[y][x][dir];
-
-        dp[y][x][dir] = 0;
-
-
-        int ny, nx;
-        // 가로 이동 (현재 방향이 가로, 대각일 때만 가능)
-        if (dir == 0 || dir == 2) {
-            ny = y;
-            nx = x + 1;
-
-            if (ny < n && nx < n) {
-                if (board[ny][nx] == '0') {
-                    dp[y][x][dir] += search(ny, nx, 0);
+    public static long search() {
+        for (int i = 0; i < n; i++) {
+            for (int j = 0; j < n; j++) {
+                if (j+1<n && board[i][j+1]!='1') {
+                    dp[i][j+1][0] += dp[i][j][0];
+                    dp[i][j+1][0] += dp[i][j][2];
+                }
+                // 세로 DP 갱신
+                if (i+1<n && board[i+1][j]!='1') {
+                    dp[i+1][j][1] += dp[i][j][1];
+                    dp[i+1][j][1] += dp[i][j][2];
+                }
+                // 대각 DP 갱신
+                if (j+1<n && i+1<n && board[i][j+1]!='1' && board[i+1][j]!='1' && board[i+1][j+1]!='1') {
+                    dp[i+1][j+1][2] += dp[i][j][0];
+                    dp[i+1][j+1][2]+= dp[i][j][1];
+                    dp[i+1][j+1][2] += dp[i][j][2];
                 }
             }
         }
-        // 세로 이동 (현재 방향이 세로, 대각일 때만 가능)
-        if (dir == 1 || dir == 2) {
-            ny = y + 1;
-            nx = x;
-            if (ny < n && nx < n) {
-                if (board[ny][nx] == '0') {
-                    dp[y][x][dir] += search(ny, nx, 1);
-                }
-            }
-        }
-        // 대각선 이동 (모든 경우에 대해 가능)
-        ny = y + 1;
-        nx = x + 1;
-        if (ny < n && nx < n) {
-            if (board[y][nx] == '0' && board[ny][x] == '0' && board[ny][nx] == '0') {
-                dp[y][x][dir] += search(ny, nx, 2);
-            }
-        }
 
-        return dp[y][x][dir];
+        return dp[n-1][n-1][0] + dp[n-1][n-1][1] + dp[n-1][n-1][2];
     }
 }
