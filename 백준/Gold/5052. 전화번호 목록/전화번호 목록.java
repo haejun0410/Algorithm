@@ -11,21 +11,9 @@ public class Main {
             Trie trie = new Trie();
             boolean flag = true;
             int n = Integer.parseInt(br.readLine());
-            String[] numbers = new String[n];
+
             for (int i = 0; i < n; i++) {
-                numbers[i] = br.readLine();
-            }
-
-            Arrays.sort(numbers, (e1, e2) -> {
-                if (e1.length() == e2.length()) {
-                    return e1.compareTo(e2);
-                }
-                else {
-                    return e1.length() - e2.length();
-                }
-            });
-
-            for (String number : numbers) {
+                String number = br.readLine();
                 if (!trie.insert(number)) {
                     flag = false;
                     continue;
@@ -54,24 +42,26 @@ public class Main {
         }
 
         public boolean insert(String word) {
-
             Node node = this.root;
+            boolean isNewNodeCreated = false;
 
             for (int i = 0; i < word.length(); i++) {
-
                 int idx = word.charAt(i) - '0';
+                
                 if (node.child[idx] == null) {
                     node.child[idx] = new Node();
+                    isNewNodeCreated = true; // 새 노드가 하나라도 만들어졌는지 체크
                 }
                 node = node.child[idx];
-
-                if (node.endOfWord) {
-                    return false;
-                }
+                
+                // 경우 1: 지나가는 길에 끝나는 단어가 있음
+                if (node.endOfWord) return false; 
             }
-
+            
             node.endOfWord = true;
-            return true;
+            
+            // 경우 2: 새 노드를 하나도 안 만들었다면, 현재 단어가 다른 단어의 접두어라는 뜻
+            return isNewNodeCreated; 
         }
     }
 }
