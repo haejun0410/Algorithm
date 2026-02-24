@@ -28,7 +28,7 @@ public class Main {
             for (String number : numbers) {
                 if (!trie.insert(number)) {
                     flag = false;
-                    break;
+                    continue;
                 }
             }
             sb.append(flag ? "YES" : "NO").append("\n");
@@ -37,11 +37,11 @@ public class Main {
     }
 
     public static class Node {
-        HashMap<Character, Node> child;
+        Node[] child; // HashMap 대신 배열 사용
         boolean endOfWord;
 
         Node() {
-            child = new HashMap<>();
+            child = new Node[10];
             endOfWord = false;
         }
     }
@@ -58,12 +58,12 @@ public class Main {
             Node node = this.root;
 
             for (int i = 0; i < word.length(); i++) {
-                char ch = word.charAt(i);
 
-                if (!node.child.containsKey(ch)) {
-                    node.child.put(ch, new Node());
+                int idx = word.charAt(i) - '0';
+                if (node.child[idx] == null) {
+                    node.child[idx] = new Node();
                 }
-                node = node.child.get(ch);
+                node = node.child[idx];
 
                 if (node.endOfWord) {
                     return false;
