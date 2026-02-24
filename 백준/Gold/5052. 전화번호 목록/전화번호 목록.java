@@ -28,7 +28,7 @@ public class Main {
             for (String number : numbers) {
                 if (!trie.insert(number)) {
                     flag = false;
-                    continue;
+                    break;
                 }
             }
             sb.append(flag ? "YES" : "NO").append("\n");
