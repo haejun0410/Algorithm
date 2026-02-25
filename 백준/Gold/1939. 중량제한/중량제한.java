@@ -48,7 +48,7 @@ public class Main {
             return o2[1] - o1[1];
         });
 
-        distance[start] = 0;
+        distance[start] = Integer.MAX_VALUE;
         pq.offer(new int[] {start, Integer.MAX_VALUE});
 
         while(!pq.isEmpty()) {
