@@ -2,91 +2,96 @@ import java.io.*;
 import java.util.*;
 
 public class Main {
-    // 배열 기반 인접 리스트 변수들
-    static int[] head;   // 각 정점의 첫 번째 간선 번호
-    static int[] next;   // 다음 간선 번호 (연결 리스트의 next 역할)
-    static int[] to;     // 목적지 노드 번호
-    static int[] weight; // 간선의 가중치
-    static int edgeCount = 0; // 현재까지 추가된 간선의 총 개수
+    // 배열 기반 인접 리스트
+    static int[] head;
+    static int[] next;
+    static int[] to;
+    static int[] weight;
+    static int edgeCount = 0;
 
-    static int[] maxWeight; // 다익스트라에서 각 노드까지의 '최대 경로 중 최소 중량' 저장
+    static int N, M;
+    static boolean[] visited;
 
     public static void main(String[] args) throws IOException {
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
         StringTokenizer st = new StringTokenizer(br.readLine());
 
-        int n = Integer.parseInt(st.nextToken());
-        int m = Integer.parseInt(st.nextToken());
+        N = Integer.parseInt(st.nextToken());
+        M = Integer.parseInt(st.nextToken());
 
-        // 초기화: 간선은 양방향이므로 M * 2 크기로 설정
-        head = new int[n + 1];
-        Arrays.fill(head, -1); // -1은 연결된 간선이 없음을 의미
-        
-        next = new int[m * 2];
-        to = new int[m * 2];
-        weight = new int[m * 2];
+        head = new int[N + 1];
+        Arrays.fill(head, -1);
+        next = new int[M * 2];
+        to = new int[M * 2];
+        weight = new int[M * 2];
 
-        for (int i = 0; i < m; i++) {
+        int maxWeightLimit = 0; // 이분 탐색의 high 범위를 결정하기 위함
+        for (int i = 0; i < M; i++) {
             st = new StringTokenizer(br.readLine());
             int u = Integer.parseInt(st.nextToken());
             int v = Integer.parseInt(st.nextToken());
             int w = Integer.parseInt(st.nextToken());
-            
-            // 양방향 간선 추가
             addEdge(u, v, w);
             addEdge(v, u, w);
+            maxWeightLimit = Math.max(maxWeightLimit, w);
         }
 
         st = new StringTokenizer(br.readLine());
-        int p1 = Integer.parseInt(st.nextToken());
-        int p2 = Integer.parseInt(st.nextToken());
+        int startNode = Integer.parseInt(st.nextToken());
+        int endNode = Integer.parseInt(st.nextToken());
 
-        maxWeight = new int[n + 1];
-        Arrays.fill(maxWeight, -1);
+        // 이분 탐색 (Binary Search)
+        int low = 1;
+        int high = maxWeightLimit;
+        int ans = 0;
 
-        dijkstra(p1);
+        while (low <= high) {
+            int mid = low + (high - low) / 2; // 오버플로우 방지용 계산식
 
-        System.out.println(maxWeight[p2]);
+            // mid라는 중량으로 목적지까지 도달 가능한지 체크
+            if (canGo(startNode, endNode, mid)) {
+                ans = mid;      // 가능하면 정답 후보로 저장하고
+                low = mid + 1;  // 더 큰 중량이 가능한지 확인
+            } else {
+                high = mid - 1; // 불가능하면 중량을 줄임
+            }
+        }
+
+        System.out.println(ans);
     }
 
-    // 간선을 배열에 추가하는 핵심 로직
     static void addEdge(int u, int v, int w) {
         to[edgeCount] = v;
         weight[edgeCount] = w;
-        next[edgeCount] = head[u]; // 현재 노드(u)의 기존 머리(head)를 내 다음으로 설정
-        head[u] = edgeCount++;      // 내가 u의 새로운 머리(head)가 됨
+        next[edgeCount] = head[u];
+        head[u] = edgeCount++;
     }
 
-    public static void dijkstra(int start) {
-        // PriorityQueue에는 [현재노드, 현재까지의최소중량] 저장
-        // 최대값을 찾아야 하므로 중량 기준 내림차순 정렬
-        PriorityQueue<int[]> pq = new PriorityQueue<>((o1, o2) -> o2[1] - o1[1]);
+    // BFS를 이용한 경로 검증
+    static boolean canGo(int start, int end, int limit) {
+        Queue<Integer> queue = new LinkedList<>();
+        visited = new boolean[N + 1];
 
-        maxWeight[start] = Integer.MAX_VALUE;
-        pq.offer(new int[] {start, Integer.MAX_VALUE});
+        queue.offer(start);
+        visited[start] = true;
 
-        while (!pq.isEmpty()) {
-            int[] curr = pq.poll();
-            int u = curr[0];
-            int currentMinW = curr[1];
+        while (!queue.isEmpty()) {
+            int curr = queue.poll();
 
-            // 이미 더 큰 최소 중량 경로를 찾았다면 건너뜀
-            if (maxWeight[u] > currentMinW) continue;
+            if (curr == end) return true; // 목적지 도달 성공
 
-            // head 배열부터 시작해서 next를 따라가며 모든 인접 간선 순회
-            for (int i = head[u]; i != -1; i = next[i]) {
-                int v = to[i];
-                int w = weight[i];
+            for (int i = head[curr]; i != -1; i = next[i]) {
+                int nextNode = to[i];
+                int bridgeWeight = weight[i];
 
-                // 새로운 경로의 최소 중량 계산
-                int nextMinW = Math.min(currentMinW, w);
-
-                // 만약 이 경로를 통해 v로 가는 것이 기존보다 더 큰 중량을 버틸 수 있다면 갱신
-                if (maxWeight[v] < nextMinW) {
-                    maxWeight[v] = nextMinW;
-                    pq.offer(new int[] {v, nextMinW});
+                // 아직 방문하지 않았고, 다리의 제한 중량이 현재 테스트 중인 mid(limit) 이상인 경우만 이동
+                if (!visited[nextNode] && bridgeWeight >= limit) {
+                    visited[nextNode] = true;
+                    queue.offer(nextNode);
                 }
             }
         }
+
+        return false; // 끝내 도달하지 못함
     }
 }
