@@ -29,6 +29,7 @@ public class Main {
         }
 
         PriorityQueue<String> queue = new PriorityQueue<>();
+        PriorityQueue<String> newQueue = new PriorityQueue<>();
         for (String node : nodes) {
             if (indegree.get(node) == 0) {
                 queue.offer(node);
@@ -40,7 +41,6 @@ public class Main {
 
         while (!queue.isEmpty()) {
             int queueSize = queue.size();
-            PriorityQueue<String> newQueue = new PriorityQueue<>();
             for (int i = 0; i < queueSize; i++) {
                 String curr = queue.poll();
                 sb.append(curr).append("\n");
@@ -55,7 +55,8 @@ public class Main {
                     }
                 }
             }
-            queue = newQueue;
+            queue.addAll(newQueue);
+            newQueue.clear();
             
         }
 
