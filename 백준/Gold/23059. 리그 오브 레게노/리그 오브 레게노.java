@@ -8,17 +8,12 @@ public class Main {
 
         Map<String, List<String>> adj = new HashMap<>();
         Map<String, Integer> indegree = new HashMap<>();
-        
-        Set<String> nodes = new HashSet<>();
 
         for (int i = 0; i < n; i++) {
             StringTokenizer st = new StringTokenizer(br.readLine(), " ");
             if (!st.hasMoreTokens()) continue;
             String pre = st.nextToken();
             String next = st.nextToken();
-
-            nodes.add(pre);
-            nodes.add(next);
 
             adj.putIfAbsent(pre, new ArrayList<>());
             adj.putIfAbsent(next, new ArrayList<>());
@@ -30,7 +25,7 @@ public class Main {
 
         PriorityQueue<String> queue = new PriorityQueue<>();
         PriorityQueue<String> newQueue = new PriorityQueue<>();
-        for (String node : nodes) {
+        for (String node : adj.keySet()) {
             if (indegree.get(node) == 0) {
                 queue.offer(node);
             }
@@ -60,7 +55,7 @@ public class Main {
             
         }
 
-        if (count != nodes.size()) {
+        if (count != adj.size()) {
             System.out.println(-1);
         } else {
             System.out.print(sb);
