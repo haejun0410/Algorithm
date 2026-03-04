@@ -23,15 +23,13 @@ public class Main {
             Arrays.fill(visited[i], Integer.MAX_VALUE);
         }
 
-        PriorityQueue<int[]> pq = new PriorityQueue<>((o1, o2) -> {
-            return o1[2] - o2[2];
-        });
+        Deque<int[]> queue = new ArrayDeque<>();
 
-        pq.offer(new int[]{0, 0, 0});
+        queue.offer(new int[]{0, 0, 0});
         visited[0][0] = 0;
 
-        while (!pq.isEmpty()) {
-            int[] curr = pq.poll();
+        while (!queue.isEmpty()) {
+            int[] curr = queue.poll();
             int y = curr[0];
             int x = curr[1];
             int dist = curr[2];
@@ -48,7 +46,12 @@ public class Main {
                     int cost = board[ny][nx] - '0';
                     if (visited[ny][nx] > dist + cost) {
                         visited[ny][nx] = dist + cost;
-                        pq.offer(new int[]{ny, nx, visited[ny][nx]});
+                        if (cost == 0) {
+                            queue.addFirst(new int[] {ny, nx, visited[ny][nx]});
+                        }
+                        else {
+                            queue.addLast(new int[] {ny, nx, visited[ny][nx]});
+                        }
                     }
                 }
             }
