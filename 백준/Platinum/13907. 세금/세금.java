@@ -90,7 +90,6 @@ public class Main {
     
     public static int dijkstra(int start, int end) {
     	PriorityQueue<Node> pq = new PriorityQueue<>();
-    	// idx, 거리, 지나친 도로 수
     	pq.offer(new Node(start, 0, 0));
     	distance[start][0] = 0;
     	int ans = Integer.MAX_VALUE;
@@ -102,11 +101,10 @@ public class Main {
     		
     		for (Node next : adj[curr.idx]) {
     		    int nextCount = curr.count + 1;
-    		    if (nextCount >= distance.length) continue; // N개 이상의 간선은 무의미
+    		    if (nextCount >= distance.length) continue;
 
     		    int nextDist = curr.dist + next.dist;
     		    
-    		    // 핵심 최적화: 0부터 nextCount까지 중 더 짧은 경로가 이미 있는지 체크
     		    boolean isPossible = true;
     		    for (int i = 0; i <= nextCount; i++) {
     		        if (distance[next.idx][i] <= nextDist) {
