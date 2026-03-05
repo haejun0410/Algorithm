@@ -1,47 +1,38 @@
 import java.io.*;
-import java.util.*;
 
 public class Main {
-    public static void main(String[] args) throws IOException{
+    public static void main(String[] args) throws IOException {
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
         String word = br.readLine();
-        int[] countAlphabet = new int[26];
+        int[] count = new int[26];
 
-        for (int i = 0; i < word.length(); i++) {
-            countAlphabet[word.charAt(i) - 'A']++;
+        for (char c : word.toCharArray()) {
+            count[c - 'A']++;
         }
 
-        int cntOdd = 0;
-        int index = -1;
-        StringBuilder sb = new StringBuilder();
-        char odd = ' ';
+        int oddCount = 0;
+        char center = ' ';
+        StringBuilder prefix = new StringBuilder();
+
         for (int i = 0; i < 26; i++) {
-            int cnt = countAlphabet[i];
-            if (cnt != 0) {
-                char ch = (char)(i + 'A');
-                if (cnt % 2 == 1) {
-                    cntOdd++;
-                    index = i;
-                }
-
-                for (int j = 0; j < cnt/2; j++) {
-                    sb.append(ch);
-                }
+            if (count[i] % 2 != 0) {
+                oddCount++;
+                center = (char) (i + 'A');
             }
-
-        }
-        StringBuilder reverseSb = new StringBuilder(sb).reverse();
-        String answer;
-        if (cntOdd > 1) {
-            answer = "I'm Sorry Hansoo";
-        }
-        else {
-            if (cntOdd == 1) {
-                sb.append((char)(index + 'A'));
+            
+            // 절반만큼 미리 추가 (사전순 보장)
+            for (int j = 0; j < count[i] / 2; j++) {
+                prefix.append((char) (i + 'A'));
             }
-            answer = sb.toString() + reverseSb.toString();
         }
 
-        System.out.println(answer);
+        if (oddCount > 1) {
+            System.out.println("I'm Sorry Hansoo");
+        } else {
+            StringBuilder answer = new StringBuilder(prefix);
+            if (oddCount == 1) answer.append(center);
+            answer.append(prefix.reverse());
+            System.out.println(answer);
+        }
     }
 }
