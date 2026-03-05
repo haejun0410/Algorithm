@@ -2,66 +2,81 @@ import java.io.*;
 import java.util.*;
 
 public class Main {
-    static int[] dy = {-1, 0, 1, 0};
-    static int[] dx = {0, -1, 0, 1};
-    static int n;
+    static int[] parent;
+    static int[] dy = {-1, 1, 0, 0};
+    static int[] dx = {0, 0, -1, 1};
+    
+    static class Point implements Comparable<Point> {
+        int r, c, h;
+        Point(int r, int c, int h) {
+            this.r = r; this.c = c; this.h = h;
+        }
+        @Override
+        public int compareTo(Point o) {
+            return o.h - this.h;
+        }
+    }
 
-    static int[][] map;
-    static boolean[][] visited;
-
-    public static void main(String[] args) throws IOException{
+    public static void main(String[] args) throws IOException {
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
-        StringTokenizer st;
+        int n = Integer.parseInt(br.readLine());
+        int[][] board = new int[n][n];
+        List<Point> points = new ArrayList<>();
 
-        n = Integer.parseInt(br.readLine());
-
-        map = new int[n][n];
-        
-        int maxHeight = -1;
-
-        for (int i=0; i<n; i++) {
-            st = new StringTokenizer(br.readLine());
-            for (int j=0; j<n; j++) {
-                int height = Integer.parseInt(st.nextToken());
-                maxHeight = Math.max(height, maxHeight);
-                map[i][j] = height;
+        for (int i = 0; i < n; i++) {
+            StringTokenizer st = new StringTokenizer(br.readLine());
+            for (int j = 0; j < n; j++) {
+                board[i][j] = Integer.parseInt(st.nextToken());
+                points.add(new Point(i, j, board[i][j]));
             }
         }
 
-        int maxCount = 0;
+        Collections.sort(points);
+        parent = new int[n * n];
+        Arrays.fill(parent, -1);
 
-        for (int height=0; height<=maxHeight; height++) {
-            visited = new boolean[n][n];
-            int count = 0;
+        int maxSafeZones = 1;
+        int currentSafeZones = 0;
+        boolean[][] active = new boolean[n][n];
 
-            for (int i=0; i<n; i++) {
-                for (int j=0; j<n; j++) {
-                    if (map[i][j] >= height && !visited[i][j]) {
-                        count++;
-                        dfs(i, j, height);
+        int idx = 0;
+        for (int h = points.get(0).h; h >= 1; h--) {
+            while (idx < points.size() && points.get(idx).h == h) {
+                Point p = points.get(idx);
+                active[p.r][p.c] = true;
+                parent[p.r * n + p.c] = p.r * n + p.c;
+                currentSafeZones++;
+
+                for (int d = 0; d < 4; d++) {
+                    int nr = p.r + dy[d];
+                    int nc = p.c + dx[d];
+
+                    if (nr >= 0 && nr < n && nc >= 0 && nc < n && active[nr][nc]) {
+                        if (union(p.r * n + p.c, nr * n + nc)) {
+                            currentSafeZones--;
+                        }
                     }
                 }
+                idx++;
             }
-            maxCount = Math.max(count, maxCount);
+            maxSafeZones = Math.max(maxSafeZones, currentSafeZones);
         }
 
-        System.out.println(maxCount);
-
-        
+        System.out.println(maxSafeZones);
     }
 
-    public static void dfs(int y, int x, int height) {
-        visited[y][x] = true;
+    static int find(int i) {
+        if (parent[i] == i) return i;
+        return parent[i] = find(parent[i]);
+    }
 
-        for (int i=0; i<4; i++) {
-            int ny = y + dy[i];
-            int nx = x + dx[i];        
-            if (ny >= 0 && ny < n && nx >= 0 && nx < n) {
-                if (map[ny][nx] >= height && !visited[ny][nx]) {
-                    dfs(ny, nx, height);
-                }
-            }
+    static boolean union(int i, int j) {
+        int rootI = find(i);
+        int rootJ = find(j);
+        if (rootI != rootJ) {
+            parent[rootI] = rootJ;
+            return true;
         }
+        return false;
     }
-
 }
