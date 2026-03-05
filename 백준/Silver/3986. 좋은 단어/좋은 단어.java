@@ -7,21 +7,20 @@ public class Main {
         int n = Integer.parseInt(br.readLine());
         int answer = 0;
 
-        for (int i = 0; i < n; i++) {
+        while (n-- > 0) {
             String word = br.readLine();
-            Deque<Character> stack = new ArrayDeque<>();
-            for (int idx = 0; idx < word.length(); idx++) {
-                char ch = word.charAt(idx);
+            if (word.length() % 2 != 0) continue;
 
-                if (stack.size() == 0 || stack.peek() != ch) {
-                    stack.push(ch);
-                }
-                else {
+            Deque<Character> stack = new ArrayDeque<>();
+            for (char ch : word.toCharArray()) {
+                if (!stack.isEmpty() && stack.peek() == ch) {
                     stack.pop();
+                } else {
+                    stack.push(ch);
                 }
             }
 
-            answer += (stack.size() == 0 ? 1 : 0);
+            if (stack.isEmpty()) answer++;
         }
 
         System.out.println(answer);
