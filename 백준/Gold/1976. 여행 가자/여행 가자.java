@@ -4,6 +4,7 @@ import java.io.*;
 public class Main {
 
     static int[] parent;
+    static int[] rank;
 
     public static void main(String[] args) throws IOException {
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
@@ -12,8 +13,10 @@ public class Main {
         int m = Integer.parseInt(br.readLine());
 
         parent = new int[n+1];
+        rank = new int[n+1];
         for (int i = 0; i < n+1; i++) {
             parent[i] = i;
+            rank[i] = 0;
         }
 
         for (int i = 1; i < n + 1; i++) {
@@ -54,8 +57,14 @@ public class Main {
         int rootA = find(a);
         int rootB = find(b);
 
-        if (rootA != rootB) {
+        if (rank[rootA] < rank[rootB]) {
+            parent[rootA] = rootB;
+        }
+        else {
             parent[rootB] = rootA;
+            if (rank[rootA] == rank[rootB]) {
+                rank[rootA]++;
+            }
         }
     }
 }
