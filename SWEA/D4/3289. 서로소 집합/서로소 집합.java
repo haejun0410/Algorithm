@@ -27,7 +27,7 @@ public class Solution {
             }
 
             for (int i = 0; i < m; i++) {
-                st = new StringTokenizer(br.readLine());
+                st = new StringTokenizer(br.readLine(), " ");
                 int command = Integer.parseInt(st.nextToken());
                 int a = Integer.parseInt(st.nextToken());
                 int b = Integer.parseInt(st.nextToken());
