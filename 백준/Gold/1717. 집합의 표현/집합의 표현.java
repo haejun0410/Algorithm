@@ -2,45 +2,42 @@ import java.util.*;
 import java.io.*;
 
 public class Main {
-
     static int[] parent;
+    static int[] rank;
 
-    public static void main(String[] args) throws IOException{
+    public static void main(String[] args) throws IOException {
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
-        StringBuilder sb = new StringBuilder();
-        StringTokenizer st = new StringTokenizer(br.readLine(), " ");
+        StringTokenizer st = new StringTokenizer(br.readLine());
 
         int n = Integer.parseInt(st.nextToken());
         int m = Integer.parseInt(st.nextToken());
 
-        parent = new int[n+1];
-        for (int i = 0; i < n+1; i++) {
+        parent = new int[n + 1];
+        rank = new int[n + 1];
+        
+        for (int i = 0; i <= n; i++) {
             parent[i] = i;
+            rank[i] = 0;
         }
 
-        for (int i = 0; i < m; i++) {
+        StringBuilder sb = new StringBuilder();
+        while (m-- > 0) {
             st = new StringTokenizer(br.readLine());
-
             int command = Integer.parseInt(st.nextToken());
             int a = Integer.parseInt(st.nextToken());
             int b = Integer.parseInt(st.nextToken());
 
-            // 같은 집합에 있는지?
-            if (command == 1) {
+            if (command == 0) {
+                union(a, b);
+            } else {
                 sb.append(find(a) == find(b) ? "YES" : "NO").append("\n");
             }
-            // 합집합 연산
-            else {
-                union(a, b);
-            }
         }
-
         System.out.print(sb);
     }
 
     public static int find(int a) {
         if (parent[a] == a) return a;
-
         return parent[a] = find(parent[a]);
     }
 
@@ -49,7 +46,14 @@ public class Main {
         int rootB = find(b);
 
         if (rootA != rootB) {
-            parent[rootB] = rootA;
+            if (rank[rootA] < rank[rootB]) {
+                parent[rootA] = rootB;
+            } else {
+                parent[rootB] = rootA;
+                if (rank[rootA] == rank[rootB]) {
+                    rank[rootA]++;
+                }
+            }
         }
     }
 }
