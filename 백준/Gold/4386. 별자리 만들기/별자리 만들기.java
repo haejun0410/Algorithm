@@ -3,31 +3,28 @@ import java.util.*;
 
 public class Main {
 
-    public static class Star {
-        int idx;
-        double y;
-        double x;
-
-        Star(int idx, double y, double x) {
-            this.idx = idx;
+    // 별의 좌표 정보만 저장 (idx는 배열 인덱스로 대체 가능)
+    static class Star {
+        double y, x;
+        Star(double y, double x) {
             this.y = y;
             this.x = x;
         }
     }
 
-    public static class StarEdge implements Comparable<StarEdge>{
-        int p1;
-        int p2;
+    // 간선 정보를 담는 클래스
+    static class Edge implements Comparable<Edge> {
+        int start, end;
         double dist;
 
-        StarEdge(int p1, int p2, double dist) {
-            this.p1 = p1;
-            this.p2 = p2;
+        Edge(int start, int end, double dist) {
+            this.start = start;
+            this.end = end;
             this.dist = dist;
         }
 
         @Override
-        public int compareTo(StarEdge o) {
+        public int compareTo(Edge o) {
             return Double.compare(this.dist, o.dist);
         }
     }
@@ -40,60 +37,57 @@ public class Main {
 
         Star[] stars = new Star[n];
         for (int i = 0; i < n; i++) {
-            StringTokenizer st = new StringTokenizer(br.readLine(), " ");
-
+            StringTokenizer st = new StringTokenizer(br.readLine());
             double y = Double.parseDouble(st.nextToken());
             double x = Double.parseDouble(st.nextToken());
-
-            stars[i] = new Star(i, y, x);
+            stars[i] = new Star(y, x);
         }
 
-        ArrayList<StarEdge> edges = new ArrayList<>();
+        // 모든 간선을 우선순위 큐에 삽입 (정렬 효과)
+        PriorityQueue<Edge> pq = new PriorityQueue<>();
         for (int i = 0; i < n; i++) {
             for (int j = i + 1; j < n; j++) {
-                double distance = computeDistance(stars[i], stars[j]);
-                edges.add(new StarEdge(i, j, distance));
+                pq.add(new Edge(i, j, computeDistance(stars[i], stars[j])));
             }
         }
 
-        Collections.sort(edges);
+        // Union-Find 초기화
         parent = new int[n];
-        for (int i = 0; i < n; i++) {
-            parent[i] = i;
-        }
+        for (int i = 0; i < n; i++) parent[i] = i;
 
         double sum = 0;
+        int count = 0; // 선택된 간선 수
 
-        for (StarEdge edge : edges) {
-            int s1 = edge.p1;
-            int s2 = edge.p2;
+        while (!pq.isEmpty()) {
+            Edge edge = pq.poll();
+            int root1 = find(edge.start);
+            int root2 = find(edge.end);
 
-            if (find(s1) != find(s2)) {
+            if (root1 != root2) {
+                union(root1, root2);
                 sum += edge.dist;
-                union(s1, s2);
+                count++;
+                
+                // MST 완성 조건: 간선 수가 (정점 - 1)개가 되면 종료
+                if (count == n - 1) break;
             }
         }
 
-        System.out.println(String.format("%.2f", sum));
-
+        System.out.printf("%.2f\n", sum);
     }
 
     public static double computeDistance(Star s1, Star s2) {
-        return Math.sqrt((Math.pow((s1.y - s2.y), 2)) + (Math.pow((s1.x - s2.x), 2)));
+        return Math.sqrt(Math.pow(s1.y - s2.y, 2) + Math.pow(s1.x - s2.x, 2));
     }
 
     public static int find(int a) {
         if (parent[a] == a) return a;
-
-        return parent[a] = find(parent[a]);
+        return parent[a] = find(parent[a]); // Path Compression
     }
 
-    public static void union(int a, int b) {
-        int rootA = find(a);
-        int rootB = find(b);
-
-        if (rootA != rootB) {
-            parent[rootA] = rootB;
-        }
+    // 이미 찾은 root 값을 사용하여 중복 연산 제거
+    public static void union(int root1, int root2) {
+        if (root1 < root2) parent[root2] = root1;
+        else parent[root1] = root2;
     }
 }
