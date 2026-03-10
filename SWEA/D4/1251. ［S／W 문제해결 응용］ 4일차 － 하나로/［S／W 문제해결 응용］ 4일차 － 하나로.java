@@ -2,16 +2,7 @@ import java.io.*;
 import java.util.*;
 
 public class Solution {
-
-    public static class Node {
-        int x;
-        int y;
-
-        Node(int x, int y) {
-            this.x = x;
-            this.y = y;
-        }
-    }
+    
 
     public static class Edge implements Comparable<Edge>{
         int p1;
@@ -43,13 +34,13 @@ public class Solution {
             StringTokenizer stX = new StringTokenizer(br.readLine());
             StringTokenizer stY = new StringTokenizer(br.readLine());
 
-            Node[] nodes = new Node[n];
+            int[][] nodes = new int[n][2];
 
             for (int i = 0; i < n; i++) {
                 int x = Integer.parseInt(stX.nextToken());
                 int y = Integer.parseInt(stY.nextToken());
 
-                nodes[i] = new Node(x, y);
+                nodes[i] = new int[] {x, y};
             }
 
             double rate = Double.parseDouble(br.readLine());
@@ -99,9 +90,9 @@ public class Solution {
         parent[rootA] = rootB;
     }
 
-    public static double calculateCost(Node p1, Node p2, double rate) {
-        long xDiff = p1.x - p2.x;
-        long yDiff = p1.y - p2.y;
+    public static double calculateCost(int[] p1, int[] p2, double rate) {
+        long xDiff = p1[0] - p2[0];
+        long yDiff = p1[1] - p2[1];
 
         return (xDiff*xDiff + yDiff*yDiff) * rate;
     }
