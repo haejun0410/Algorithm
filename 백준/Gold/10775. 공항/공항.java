@@ -23,7 +23,7 @@ public class Main {
 
             if (root == 0) break;
             count++;
-            union(root, root-1);
+            union(root, find(root-1));
         }
 
         System.out.print(count);
