@@ -34,14 +34,14 @@ public class Solution {
         int TC = Integer.parseInt(br.readLine());
 
         for (int testCase = 1; testCase <= TC; testCase++) {
-            StringTokenizer st = new StringTokenizer(br.readLine());
+            StringTokenizer st = new StringTokenizer(br.readLine(), " ");
             int N = Integer.parseInt(st.nextToken());
             int M = Integer.parseInt(st.nextToken());
             int K = Integer.parseInt(st.nextToken());
 
             List<Microbe> microbes = new ArrayList<>();
             for (int i = 0; i < K; i++) {
-                st = new StringTokenizer(br.readLine());
+                st = new StringTokenizer(br.readLine(), " ");
                 microbes.add(new Microbe(
                         Integer.parseInt(st.nextToken()),
                         Integer.parseInt(st.nextToken()),
