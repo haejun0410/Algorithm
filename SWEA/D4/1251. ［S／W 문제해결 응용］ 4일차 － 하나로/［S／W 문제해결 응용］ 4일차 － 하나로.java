@@ -3,76 +3,73 @@ import java.util.*;
 
 public class Solution {
 
-    public static class Edge implements Comparable<Edge>{
-        int p;
-        double dist;
+    static int N;
+    static double E, answer;
+    static int[][] nodes;
+    static boolean[] visited;
+    static double[] minEdge;
 
-        Edge(int p, double dist) {
-            this.p = p;
-            this.dist = dist;
-        }
+    public static void main(String[] args) throws Exception {
 
-        @Override
-        public int compareTo(Edge o) {
-            return Double.compare(this.dist, o.dist);
-        }
-    }
-
-    static int[] parent;
-
-    public static void main(String[] args) throws IOException {
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
         StringBuilder sb = new StringBuilder();
-        int TC = Integer.parseInt(br.readLine());
+        StringTokenizer st;
 
-        for (int testCase = 1; testCase <= TC; testCase++) {
-            int n = Integer.parseInt(br.readLine());
+        int T = Integer.parseInt(br.readLine());
 
-            StringTokenizer stX = new StringTokenizer(br.readLine());
-            StringTokenizer stY = new StringTokenizer(br.readLine());
+        for (int testCase = 1; testCase <= T; testCase++) {
 
-            int[][] nodes = new int[n][2];
+            N = Integer.parseInt(br.readLine());
+            nodes = new int[N][2];
 
-            for (int i = 0; i < n; i++) {
-                int x = Integer.parseInt(stX.nextToken());
-                int y = Integer.parseInt(stY.nextToken());
-
-                nodes[i] = new int[] {x, y};
+            st = new StringTokenizer(br.readLine());
+            for (int i = 0; i < N; i++) {
+                nodes[i][0] = Integer.parseInt(st.nextToken());
             }
 
-            double rate = Double.parseDouble(br.readLine());
-            ArrayList<Edge>[] adj = new ArrayList[n];
-            for (int i = 0; i < n; i++) {
-                adj[i] = new ArrayList<>();
+            st = new StringTokenizer(br.readLine());
+            for (int i = 0; i < N; i++) {
+                nodes[i][1] = Integer.parseInt(st.nextToken());
             }
-            for (int i = 0; i < n; i++) {
-                for (int j = i +1; j < n; j++) {
-                    adj[i].add(new Edge(j, calculateCost(nodes[i], nodes[j], rate)));
-                    adj[j].add(new Edge(i, calculateCost(nodes[i], nodes[j], rate)));
+
+            E = Double.parseDouble(br.readLine());
+
+            visited = new boolean[N];
+            minEdge = new double[N];
+
+            Arrays.fill(minEdge, Double.MAX_VALUE);
+            minEdge[0] = 0;
+
+            answer = 0;
+
+            for (int i = 0; i < N; i++) {
+
+                int minVertex = -1;
+                double min = Double.MAX_VALUE;
+
+                // 가장 작은 간선 찾기
+                for (int j = 0; j < N; j++) {
+                    if (!visited[j] && minEdge[j] < min) {
+                        minVertex = j;
+                        min = minEdge[j];
+                    }
                 }
-            }
 
-            boolean[] visited = new boolean[n+1];
-            PriorityQueue<Edge> pq = new PriorityQueue<>();
+                visited[minVertex] = true;
+                answer += min;
 
-            visited[0] = true;
-            pq.addAll(adj[0]);
+                // 거리 업데이트
+                for (int j = 0; j < N; j++) {
+                    if (!visited[j]) {
+                        double dx = nodes[minVertex][0] - nodes[j][0];
+                        double dy = nodes[minVertex][1] - nodes[j][1];
 
-            double answer = 0;
-            int count = 0;
+                        double dist = dx * dx + dy * dy;
+                        double cost = E * dist;
 
-            while(!pq.isEmpty() && count < n-1) {
-                Edge edge = pq.poll();
-
-                if (visited[edge.p]) continue;
-
-                visited[edge.p] = true;
-                answer += edge.dist;
-                count++;
-
-                for (Edge next : adj[edge.p]) {
-                    if (!visited[next.p]) {
-                        pq.offer(next);
+                        if (minEdge[j] > cost) {
+                            minEdge[j] = cost;
+                        }
                     }
                 }
             }
@@ -80,14 +77,8 @@ public class Solution {
             sb.append("#").append(testCase).append(" ").append(Math.round(answer)).append("\n");
         }
 
-        System.out.print(sb);
+        System.out.println(sb);
+
     }
 
-
-    public static double calculateCost(int[] p1, int[] p2, double rate) {
-        long xDiff = p1[0] - p2[0];
-        long yDiff = p1[1] - p2[1];
-
-        return (xDiff*xDiff + yDiff*yDiff) * rate;
-    }
 }
