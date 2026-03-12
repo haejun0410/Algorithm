@@ -2,83 +2,62 @@ import java.util.*;
 import java.io.*;
 
 public class Main {
-	
-	public static class SegmentTree {
-		// (start ~ end) 인덱스에 해당하는 수들의 합
-		long[] tree;
-		int n;
-		
-		SegmentTree() {
-			n = 2_000_001;
-			tree = new long[4*n];
-		}
-		
-		public void update(int idx, int diff) {
-			updateHelper(1, 0, n-1, idx, diff);
-		}
-		
-		private void updateHelper(int node, int start, int end, int idx, int diff) {
-			
-			if (idx < start || idx > end) return;
-			
-			tree[node] += diff;
-			
-			if (start != end) {
-				int mid = (start + end) / 2;
-				updateHelper(node * 2, start, mid, idx, diff);
-				updateHelper(node * 2 + 1, mid + 1, end, idx, diff);
-			}
-			
-		}
-		
-		public int query(long idx) {
-			return queryHelper(1, 0, n-1, idx);
-		}
-		
-		private int queryHelper(int node, int start, int end, long idx) {
-			if (start == end) {
-				return start;
-			}
-			
-			int mid = (start + end) / 2;
-			long leftSum = tree[node*2];
-			
-			if (idx <= leftSum) {
-				return queryHelper(2*node, start, mid, idx);
-			}
-			else {
-				return queryHelper(2*node+1, mid + 1, end, idx - leftSum);
-			}
-		}
-	}
-	
-	
-	public static void main(String[] args) throws IOException {
-		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
-		StringBuilder sb = new StringBuilder();
-		
-		int n = Integer.parseInt(br.readLine());
-		
-		SegmentTree segTree = new SegmentTree();
-		
-		for (int i = 0; i < n; i++) {
-			StringTokenizer st = new StringTokenizer(br.readLine(), " ");
-			int a = Integer.parseInt(st.nextToken());
-			
-			// update
-			if (a==1) {
-				int b = Integer.parseInt(st.nextToken());
-				segTree.update(b, 1);
-			}
-			// query
-			else if (a==2) {
-				long b = Long.parseLong(st.nextToken());
-				int idx = segTree.query(b);
-				segTree.update(idx, -1);
-				sb.append(idx).append("\n");
-			}
-		}
-		
-		System.out.print(sb);
-	}
+    
+    public static class SegmentTree {
+        int[] tree;
+        int S = 1; // 단말 노드의 시작 인덱스
+        
+        SegmentTree() {
+            // 2,000,000을 수용하는 가장 작은 2의 거듭제곱 (2,097,152)
+            while (S < 2000000) S <<= 1;
+            tree = new int[S * 2];
+        }
+        
+        // 반복문을 이용한 업데이트 (매우 빠름)
+        public void update(int idx, int diff) {
+            int node = S + idx - 1;
+            while (node > 0) {
+                tree[node] += diff;
+                node /= 2;
+            }
+        }
+        
+        // 반복문을 이용한 K번째 찾기 (매우 빠름)
+        public int query(long k) {
+            int node = 1;
+            while (node < S) {
+                if (tree[node * 2] >= k) {
+                    node = node * 2;
+                } else {
+                    k -= tree[node * 2];
+                    node = node * 2 + 1;
+                }
+            }
+            return node - S + 1;
+        }
+    }
+    
+    public static void main(String[] args) throws IOException {
+        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+        StringBuilder sb = new StringBuilder();
+        
+        int n = Integer.parseInt(br.readLine());
+        SegmentTree segTree = new SegmentTree();
+        
+        for (int i = 0; i < n; i++) {
+            StringTokenizer st = new StringTokenizer(br.readLine());
+            int a = Integer.parseInt(st.nextToken());
+            int b = Integer.parseInt(st.nextToken());
+            
+            if (a == 1) {
+                segTree.update(b, 1);
+            } else {
+                // b번째 수를 찾고 출력 후, 개수를 하나 줄임
+                int idx = segTree.query(b);
+                segTree.update(idx, -1);
+                sb.append(idx).append("\n");
+            }
+        }
+        System.out.print(sb);
+    }
 }
