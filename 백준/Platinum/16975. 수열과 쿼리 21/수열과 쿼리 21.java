@@ -3,6 +3,7 @@ import java.io.*;
 
 public class Main {
 	
+	
 	public static class LazySegmentTree {
 		long[] tree;
 		long[] lazy;
@@ -22,20 +23,21 @@ public class Main {
 			}
 			
 			int mid = (start + end) / 2;
-			build(arr, 2*node, start, mid);
-			build(arr, 2*node+1, mid + 1, end);
 			
-			tree[node] = tree[2*node] + tree[2*node + 1];
+			build(arr, node * 2, start, mid);
+			build(arr, node * 2 + 1, mid + 1, end);
+			
+			tree[node] = tree[node * 2] + tree[node * 2 + 1];
 		}
 		
 		private void push(int node, int start, int end) {
 			if (lazy[node] == 0) return;
 			
-			tree[node] += (end - start + 1) * lazy[node];
+			tree[node] += lazy[node] * (end - start + 1);
 			
 			if (start != end) {
-				lazy[2 * node] += lazy[node];
-				lazy[2 * node + 1] += lazy[node];
+				lazy[node * 2] += lazy[node];
+				lazy[node * 2 + 1] += lazy[node];
 			}
 			
 			lazy[node] = 0;
@@ -44,56 +46,56 @@ public class Main {
 		public void updateRange(int l, int r, long val) {
 			updateRangeHelper(1, 0, n-1, l, r, val);
 		}
-		private void updateRangeHelper(int node, int start, int end, int l, int r, long val) {
+		
+		private void updateRangeHelper(int node, int start, int end, int l, int r , long val) {
 			push(node, start, end);
 			
 			// 범위를 벗어남
 			if (start > r || end < l) return;
-			// 범위가 포함됨
+			// 범위와 완전히 겹침
 			if (start >= l && end <= r) {
 				lazy[node] += val;
 				push(node, start, end);
 				return;
 			}
-			
-			// 범위가 일부 포함
+			// 그외
 			int mid = (start + end) / 2;
-			updateRangeHelper(2*node, start, mid, l, r, val);
-			updateRangeHelper(2*node+1, mid + 1, end, l, r, val);
 			
-			tree[node] = tree[2*node] + tree[2*node+1];
+			updateRangeHelper(node * 2, start, mid, l, r, val);
+			updateRangeHelper(node * 2 + 1, mid + 1, end, l, r, val);
+			
+			tree[node] = tree[node * 2] + tree[node * 2 + 1];
 		}
 		
-		public long query(int x) {
-			return queryHelper(1, 0, n-1, x);
+		public long query(int idx) {
+			return queryHelper(1, 0, n-1, idx);
 		}
 		
-		private long queryHelper(int node, int start, int end, int x) {
+		private long queryHelper (int node, int start, int end, int idx) {
 			push(node, start, end);
-			
 			if (start == end) {
 				return tree[node];
 			}
 			
 			int mid = (start + end) / 2;
-			if (x <= mid) {
-				return queryHelper(node * 2, start, mid, x);
+			
+			if (idx <= mid) {
+				return queryHelper(node * 2, start, mid, idx);
 			}
 			else {
-				return queryHelper(node * 2 + 1, mid + 1, end, x);
+				return queryHelper(node * 2 + 1, mid +1, end, idx);
 			}
 		}
-		
 	}
+	
 	
 	public static void main(String[] args) throws IOException {
 		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
 		StringBuilder sb = new StringBuilder();
-		
 		int n = Integer.parseInt(br.readLine());
-		StringTokenizer st = new StringTokenizer(br.readLine(), " ");
 		
 		long[] arr = new long[n];
+		StringTokenizer st = new StringTokenizer(br.readLine(), " ");
 		for (int i = 0; i < n; i++) {
 			arr[i] = Long.parseLong(st.nextToken());
 		}
@@ -101,25 +103,22 @@ public class Main {
 		LazySegmentTree lazySegTree = new LazySegmentTree(arr);
 		
 		int m = Integer.parseInt(br.readLine());
-		
 		for (int i = 0; i < m; i++) {
-			st = new StringTokenizer(br.readLine());
+			st = new StringTokenizer(br.readLine(), " ");
 			
 			int a = Integer.parseInt(st.nextToken());
 			
-			
-			// 업데이트 
+			// update
 			if (a == 1) {
-				int b = Integer.parseInt(st.nextToken());
-				int c = Integer.parseInt(st.nextToken());
+				int b = Integer.parseInt(st.nextToken()) -1;
+				int c = Integer.parseInt(st.nextToken()) -1;
 				long d = Long.parseLong(st.nextToken());
-				
-				lazySegTree.updateRange(b-1, c-1, d);
+				lazySegTree.updateRange(b, c, d);
 			}
-			// 쿼리
+			// query
 			else if (a == 2) {
-				int x = Integer.parseInt(st.nextToken());
-				sb.append(lazySegTree.query(x-1)).append("\n");
+				int x = Integer.parseInt(st.nextToken()) -1;
+				sb.append(lazySegTree.query(x)).append("\n");
 			}
 		}
 		
