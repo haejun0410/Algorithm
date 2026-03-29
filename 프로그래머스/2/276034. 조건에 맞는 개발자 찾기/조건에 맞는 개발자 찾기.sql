@@ -1,13 +1,13 @@
--- 코드를 작성해주세요
-SELECT
-    DISTINCT A.ID, A.EMAIL, A.FIRST_NAME, A.LAST_NAME
+SELECT DISTINCT
+    d.ID,
+    d.EMAIL,
+    d.FIRST_NAME,
+    d.LAST_NAME
 FROM
-    DEVELOPERS AS A
+    developers d
 JOIN
-    SKILLCODES AS B
-ON 
-    (A.SKILL_CODE & B.CODE != 0)
-WHERE 
-    B.NAME in ('Python', 'C#')
+    SKILLCODES s ON (d.SKILL_CODE & s.CODE) > 0
+WHERE
+    s.NAME LIKE 'Py%' OR s.NAME = 'C#'
 ORDER BY
-    ID
+    d.ID;
