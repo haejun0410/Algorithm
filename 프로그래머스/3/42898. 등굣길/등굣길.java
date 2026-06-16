@@ -1,28 +1,31 @@
 class Solution {
-    
-    static int[] dy = {1, 0};
-    static int[] dx = {0, 1};
-    static final int MOD =1_000_000_007;
-    
     public int solution(int m, int n, int[][] puddles) {
-        boolean[][] isPuddle = new boolean[n][m];
-        for (int[] puddle : puddles) {
-            isPuddle[puddle[1]-1][puddle[0]-1] = true;
-        }
+        
+        final int MOD = 1_000_000_007;
+        
         int[][] dp = new int[n][m];
+        
+        for (int[] puddle : puddles) {
+            int x = puddle[0] - 1;
+            int y = puddle[1] - 1;
+            dp[y][x] = -1;
+        }
+        
         dp[0][0] = 1;
         
-        for(int i = 0; i < n; i++) {
+        for (int i = 0; i < n; i++) {
             for (int j = 0; j < m; j++) {
-                for (int k = 0; k < 2; k++) {
-                    int ny = i + dy[k];
-                    int nx = j + dx[k];
-                    
-                    if (ny >= n || nx >= m) continue;
-                    
-                    if (!isPuddle[ny][nx]) {
-                        dp[ny][nx] = (dp[ny][nx] + dp[i][j]) % MOD;
-                    }
+                if (dp[i][j] == -1) {
+                    dp[i][j] = 0;
+                    continue;
+                }
+                
+                if (i > 0) {
+                    dp[i][j] = (dp[i][j] + dp[i - 1][j]) % MOD;
+                }
+
+                if (j > 0) {
+                    dp[i][j] = (dp[i][j] + dp[i][j - 1]) % MOD;
                 }
             }
         }
