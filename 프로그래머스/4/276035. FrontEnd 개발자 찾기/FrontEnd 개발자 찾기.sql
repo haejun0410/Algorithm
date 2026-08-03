@@ -1,0 +1,16 @@
+SELECT
+    DISTINCT
+    a.ID,
+    a.EMAIL,
+    a.FIRST_NAME,
+    a.LAST_NAME
+FROM
+    DEVELOPERS AS a
+JOIN
+    SKILLCODES AS b
+ON
+    a.SKILL_CODE & b.CODE != 0
+WHERE
+    b.CATEGORY = "Front End"
+ORDER BY
+    a.ID
