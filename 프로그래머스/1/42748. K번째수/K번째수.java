@@ -2,15 +2,20 @@ import java.util.*;
 
 class Solution {
     public int[] solution(int[] array, int[][] commands) {
+        int n = commands.length;
+        int[] answer = new int[n];
         
-        ArrayList<Integer> answer = new ArrayList<>();
-        for(int[] command : commands) {
-            int[] sliced = Arrays.copyOfRange(array, command[0]-1, command[1]);
-            Arrays.sort(sliced);
-            answer.add(sliced[command[2]-1]);
+        int idx = 0;
+        for (int[] command : commands) {
+            int start = command[0]-1;
+            int end = command[1];
+            int k = command[2]-1;
+            
+            int[] temp = Arrays.copyOfRange(array, start, end);
+            Arrays.sort(temp);
+            answer[idx++] = temp[k];
         }
         
-        int[] result = answer.stream().mapToInt(Integer::intValue).toArray();
-        return result;
+        return answer;
     }
 }
