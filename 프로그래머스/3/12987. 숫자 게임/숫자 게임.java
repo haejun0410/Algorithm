@@ -1,21 +1,23 @@
-import java.util.Arrays;
+import java.util.*;
 
 class Solution {
     public int solution(int[] A, int[] B) {
-        int answer = 0;
-        
         Arrays.sort(A);
         Arrays.sort(B);
         
-        int indexA = 0;
-        int indexB = 0;
+        int answer = 0;
+        int aPoint = 0;
+        int bPoint = 0;
         
-        while (indexB < B.length) {
-            if (B[indexB] > A[indexA]) {
+        while(aPoint < A.length && bPoint < B.length) {
+            if (A[aPoint] < B[bPoint]) {
                 answer++;
-                indexA++;
+                aPoint++;
+                bPoint++;
             }
-            indexB++;
+            else {
+                bPoint++;
+            }
         }
         
         return answer;
